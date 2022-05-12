@@ -28,6 +28,7 @@ dag = DAG("lesson3.exercise4", start_date=datetime.datetime.utcnow())
 #
 copy_trips_task = S3ToRedshiftOperator(
     task_id="copy_trips_task",
+    aws_credentials="aws_credentials",
     s3_bucket="udacity-dend",
     s3_key="data-pipelines/divvy/unpartitioned/divvy_trips_2018.csv",
     table="trips",
@@ -38,14 +39,20 @@ copy_trips_task = S3ToRedshiftOperator(
 #
 # TODO: Perform a data quality check on the Trips table
 #
-#check_trips = HasRowsOperator(...)
+check_trips = HasRowsOperator(
+    task_id="check_trips",
+    redshift_conn_id="redshift",
+    table="trips",
+    dag=dag
+)
 
 #
 # TODO: Use the FactsCalculatorOperator to create a Facts table in RedShift. The fact column should
 #       be `tripduration` and the groupby_column should be `bikeid`
 #
-#calculate_facts = FactsCalculatorOperator(...)
+# calculate_facts = FactsCalculatorOperator(...)
 
 #
 # TODO: Define task ordering for the DAG tasks you defined
 #
+copy_trips_task >> check_trips
