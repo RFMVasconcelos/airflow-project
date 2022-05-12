@@ -26,7 +26,14 @@ dag = DAG("lesson3.exercise4", start_date=datetime.datetime.utcnow())
 #       "data-pipelines/divvy/unpartitioned/divvy_trips_2018.csv"
 #       and the s3_bucket "udacity-dend"
 #
-#copy_trips_task = S3ToRedshiftOperator(...)
+copy_trips_task = S3ToRedshiftOperator(
+    task_id="copy_trips_task",
+    s3_bucket="udacity-dend",
+    s3_key="data-pipelines/divvy/unpartitioned/divvy_trips_2018.csv",
+    table="trips",
+    redshift_conn_id="redshift",
+    dag=dag
+)
 
 #
 # TODO: Perform a data quality check on the Trips table
